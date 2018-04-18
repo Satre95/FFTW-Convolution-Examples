@@ -21,6 +21,14 @@ void print_complex_array(const std::complex<double>* arr, int length)
     cout << endl;
 }
 
+void print_complex_array(const fftw_complex * arr, int length)
+{
+    for (int i = 0; i < length; ++i) {
+        cout << arr[i][0] << "+" << arr[i][1] << "i, ";
+    }
+    cout << endl;
+}
+
 template<class T>
 void print_vector(const vector<T>& vec)
 {

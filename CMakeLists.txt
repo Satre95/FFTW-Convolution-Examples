@@ -17,14 +17,14 @@ include(FindFFTW)
 
 # Get file list
 set(SOURCE_FILES fftw_wrappers.cpp convolution_example.cpp)
-set(HEADER_FILES ffftw_wrappers.hpp)
+set(HEADER_FILES fftw_wrappers.hpp)
 
 # Create the executable
 add_executable(FFTW-Example ${HEADER_FILES} ${SOURCE_FILES})
 
 if(FFTW_FOUND)
-    target_link_libraries(PixelProcessor PRIVATE ${FFTW_LIBRARIES})
-    target_include_directories(PixelProcessor PRIVATE ${FFTW_INCLUDES})
+    target_link_libraries(FFTW-Example PRIVATE ${FFTW_LIBRARIES})
+    target_include_directories(FFTW-Example PRIVATE ${FFTW_INCLUDES})
 else()
 	message(FATAL_ERROR "Unable to find FFTW3. Please install it and add it to your path.")
 endif()
