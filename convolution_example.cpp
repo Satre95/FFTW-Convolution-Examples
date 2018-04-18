@@ -5,8 +5,6 @@
 #include <random>
 #include "fftw_wrappers.hpp"
 
-#define ROUND(x) int(x + 0.5)
-
 using namespace std;
 
 void print_double_array(const double* arr, int length)
@@ -184,19 +182,15 @@ vector<double> fftw_convolve_2d(double * a_2d, double * b_2d, int n0, int n1) {
 
     i_fft_a.execute();
 
-    cout << "Inverset FFT(A):" << endl;
+    cout << "Inverse FFT(A):" << endl;
     std::vector<double> i_fft_a_output(i_fft_a.get_output());
     for (size_t i = 0; i < i_fft_a_output.size(); ++i)
         i_fft_a_output.at(i) /= (i_fft_a.output_size_0 * i_fft_a.output_size_1);
     print_2d_array(i_fft_a_output.data(), i_fft_a.output_size_0, i_fft_a.output_size_1);
 
     for (int i = 0; i < n1; ++i)
-    {
         for (int j= 0; j < n0; ++j)
-        {
-            assert(ROUND(i_fft_a_output.at(i * n0 + j)) == ROUND(a_2d[i * n0 + j]));
-        }
-    }
+            assert(std::round(i_fft_a_output.at(i * n0 + j)) == std::round(a_2d[i * n0 + j]));
 
     return vector<double>();
 }
