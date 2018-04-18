@@ -12,7 +12,7 @@
 //
 
 #include <vector>
-#include <complex.h>
+#include <complex>
 #include <fftw3.h>
 
 // Usage: (after initializing the class)
@@ -30,13 +30,13 @@ public:
     void set_input_zeropadded(const double* buffer, int size);
     void set_input_zeropadded(const std::vector<double>& vec);
     void execute();
-    std::vector<double complex> get_output();
+    std::vector<std::complex<double>> get_output();
 
     const int input_size;
     double* const input_buffer;
 
     const int output_size;
-    double complex* const output_buffer;
+    fftw_complex * const output_buffer;
 
 private:
     fftw_plan plan;
@@ -47,16 +47,16 @@ class FFTW_C2R_1D_Executor {
 public:
     FFTW_C2R_1D_Executor(int n_real_samples);
     ~FFTW_C2R_1D_Executor();
-    void set_input(const double complex* buffer, int size);
-    void set_input(const std::vector<double complex>& vec);
+    void set_input(const std::complex<double>* buffer, int size);
+    void set_input(const std::vector<std::complex<double>>& vec);
     void execute();
     std::vector<double> get_output();
 
     const int input_size;
-    double complex* const input_buffer;
+    fftw_complex * const input_buffer;
 
     const int output_size;
-    double* const output_buffer;
+    double * const output_buffer;
 
 private:
     fftw_plan plan;

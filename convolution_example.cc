@@ -13,10 +13,10 @@ void print_double_array(const double* arr, int length)
     }
     cout << endl;
 }
-void print_complex_array(const double complex* arr, int length)
+void print_complex_array(const std::complex<double>* arr, int length)
 {
     for (int i = 0; i < length; ++i) {
-        cout << creal(arr[i]) << "+" << cimag(arr[i]) << "i, ";
+        cout << arr[i].real() << "+" << arr[i].imag() << "i, ";
     }
     cout << endl;
 }
