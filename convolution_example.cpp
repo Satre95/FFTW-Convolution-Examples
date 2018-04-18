@@ -70,7 +70,7 @@ vector<T> vector_elementwise_multiply(const vector<T> a, const vector<T> b)
 }
 
 // Convolution of real vectors using the Fast Fourier Transform and the convolution theorem.
-// See http://en.wikipedia.org/w/index.php?title=Convolution&oldid=630841165#Fast_convolution_algorithms
+// See https://en.wikipedia.org/wiki/Convolution
 vector<double> fftw_convolve(vector<double>& a, vector<double>& b)
 {
     // Recall that element-wise

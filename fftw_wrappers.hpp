@@ -62,6 +62,30 @@ private:
     fftw_plan plan;
 };
 
+class FFTW_R2C_2D_Executor
+{
+public:
+    FFTW_R2C_2D_Executor(int n0_real_samples, int n1_real_samples);
+    ~FFTW_R2C_2D_Executor();
+    
+    /// Input is 2D array stored in ROW major
+    void set_input_zeropadded(const double* buffer, int size0, int size1);
+    /// Input is array of pointers to rows.
+    void set_input_zeropadded(const std::vector<double *> & vec, int rowSize);
+    void execute();
+    std::vector<std::complex<double>> get_output();
+
+    const int input_size_0;
+    const int input_size_1;
+    double* const  input_buffer;
+
+    const int output_size_0;
+    const int output_size_1;
+    fftw_complex * const output_buffer;
+
+private:
+    fftw_plan plan;
+};
 
 #endif
 
