@@ -126,8 +126,7 @@ void FFTW_R2C_2D_Executor::set_input_zeropadded(const std::vector<double *> & ve
     }
 }
 
-void FFTW_R2C_2D_Executor::execute()
-{
+void FFTW_R2C_2D_Executor::execute() {
     fftw_execute(plan);
 }
 

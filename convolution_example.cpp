@@ -2,6 +2,7 @@
 #include <vector>
 #include <cassert>
 #include <cstring>
+#include <random>
 #include "fftw_wrappers.hpp"
 
 using namespace std;
@@ -37,6 +38,33 @@ void print_vector(const vector<T>& vec)
     }
     cout << endl;
 }
+
+/// Prints out a 2D array. Assumes array is stored in ROW major
+template <class T>
+void print_2d_array(const T * const arr, int n0, int n1) {
+    for (int i = 0; i < n1; ++i)
+    {
+        // cout << "|\t";
+        for (int j = 0; j < n0; ++j)
+        {
+            cout << arr[i * n0 + j] << "\t|\t";
+        }
+        cout << endl;
+    }
+}
+
+void print_2d_complex_array(const fftw_complex * const arr, int n0, int n1) {
+    for (int i = 0; i < n1; ++i) {
+        // cout << "|\t";
+        for (int j = 0; j < n0; ++j) {
+            cout << arr[i * n0 + j][0] << "+" << arr[i * n0 + j][1] << "i |\t";
+        }
+        cout << endl;
+
+    }
+
+}
+
 
 // This function computes the discrete convolution of two arrays:
 // result[i] = a[i]*b[0] + a[i-1]*b[1] + ... + a[0]*b[i]
@@ -123,8 +151,28 @@ vector<double> fftw_convolve(vector<double>& a, vector<double>& b)
     return result;
 }
 
+vector<double> fftw_convolve_2d(double * a_2d, double * b_2d, int n0, int n1) {
+    int padded_length = (n0 * n1) * 2 - 1;
+    FFTW_R2C_2D_Executor fft_a(n0, n1);
+    fft_a.set_input_zeropadded(a_2d, n0, n1);
+
+    cout << "a:" << endl;
+    print_2d_array(fft_a.input_buffer, fft_a.input_size_0, fft_a.input_size_1);
+
+    fft_a.execute();
+
+    cout << "FFT(a):" << endl;
+    print_2d_complex_array(fft_a.output_buffer, fft_a.output_size_0, fft_a.output_size_1);
+
+
+
+
+    return vector<double>();
+}
+
 int main()
 {
+    cout << "**** 1D Operations ***********************************************" << endl << endl;;
     vector<double> a;
     a.push_back(2);
     a.push_back(1);
@@ -156,5 +204,37 @@ int main()
     vector<double> result_fft = fftw_convolve(a, b);
     cout << "FFT convolution result:\n";
     print_vector(result_fft);
+
+    cout << endl << "**** 2D Operations ***********************************************" << endl << endl;;
+
+    std::random_device rd;
+    std::mt19937 generator(rd());
+    std::uniform_int_distribution<> distro(1, 100);
+
+    int n0 = 5, n1 = 5;
+    double * a_2D = new double[n0 * n1];
+    for (int i = 0; i < n0 * n1; ++i)
+    {
+        a_2D[i] = distro(generator);
+    }
+    cout << "First Grid (a, " << n0 << "x" << n1 << ") is: " << endl;
+    print_2d_array(a_2D, n0, n1);
+
+    double * b_2D = new double[n0 * n1];
+    for (int i = 0; i < n0 * n1; ++i)
+    {
+        b_2D[i] = distro(generator);
+    }
+    cout << "Second Grid (b, " << n0 << "x" << n1 << ") is: " << endl;
+    print_2d_array(b_2D, n0, n1);
+
+    cout << "==== FFT convolution =============================================" << endl;
+    vector<double> result_fft_2d = fftw_convolve_2d(a_2D, b_2D, n0, n1);
+
+
+
+
+    delete[] a_2D;
+    delete[] b_2D;
 }
 
