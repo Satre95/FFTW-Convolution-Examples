@@ -5,6 +5,8 @@
 #include <random>
 #include "fftw_wrappers.hpp"
 
+#define ROUND(x) int(x + 0.5)
+
 using namespace std;
 
 void print_double_array(const double* arr, int length)
@@ -152,7 +154,6 @@ vector<double> fftw_convolve(vector<double>& a, vector<double>& b)
 }
 
 vector<double> fftw_convolve_2d(double * a_2d, double * b_2d, int n0, int n1) {
-    int padded_length = (n0 * n1) * 2 - 1;
     FFTW_R2C_2D_Executor fft_a(n0, n1);
     fft_a.set_input_zeropadded(a_2d, n0, n1);
 
@@ -164,8 +165,38 @@ vector<double> fftw_convolve_2d(double * a_2d, double * b_2d, int n0, int n1) {
     cout << "FFT(a):" << endl;
     print_2d_complex_array(fft_a.output_buffer, fft_a.output_size_0, fft_a.output_size_1);
 
+    cout << endl;
+
+    FFTW_R2C_2D_Executor fft_b(n0, n1);
+    fft_b.set_input_zeropadded(b_2d, n0, n1);
+
+    cout << "b:" << endl;
+    print_2d_array(fft_b.input_buffer, fft_b.input_size_0, fft_b.input_size_1);
+
+    fft_b.execute();
+
+    cout << "FFT(b):" << endl;
+    print_2d_complex_array(fft_b.output_buffer, fft_b.output_size_0, fft_b.output_size_1);
 
 
+    FFTW_C2R_2D_Executor i_fft_a(n0, n1);
+    i_fft_a.set_input(fft_a.get_output().data(), fft_a.output_size_0, fft_a.output_size_1);
+
+    i_fft_a.execute();
+
+    cout << "Inverset FFT(A):" << endl;
+    std::vector<double> i_fft_a_output(i_fft_a.get_output());
+    for (size_t i = 0; i < i_fft_a_output.size(); ++i)
+        i_fft_a_output.at(i) /= (i_fft_a.output_size_0 * i_fft_a.output_size_1);
+    print_2d_array(i_fft_a_output.data(), i_fft_a.output_size_0, i_fft_a.output_size_1);
+
+    for (int i = 0; i < n1; ++i)
+    {
+        for (int j= 0; j < n0; ++j)
+        {
+            assert(ROUND(i_fft_a_output.at(i * n0 + j)) == ROUND(a_2d[i * n0 + j]));
+        }
+    }
 
     return vector<double>();
 }

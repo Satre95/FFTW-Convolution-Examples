@@ -87,5 +87,27 @@ private:
     fftw_plan plan;
 };
 
+// Usage of this class is similar to that of FFTW_R2C_1D_Executor, only the input is n_real_samples/2+1 complex samples.
+class FFTW_C2R_2D_Executor {
+public:
+    FFTW_C2R_2D_Executor(int n0_real_samples, int n1_real_samples);
+    ~FFTW_C2R_2D_Executor();
+    void set_input(const std::complex<double>* buffer, int n0, int n1);
+    void set_input(const std::vector<std::complex<double> *> & vec, int rowSize);
+    void execute();
+    std::vector<double> get_output();
+
+    const int input_size_0;
+    const int input_size_1;
+    fftw_complex* const  input_buffer;
+
+    const int output_size_0;
+    const int output_size_1;
+    double * const output_buffer;
+
+private:
+    fftw_plan plan;
+};
+
 #endif
 
