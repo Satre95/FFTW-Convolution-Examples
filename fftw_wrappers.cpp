@@ -1,6 +1,6 @@
 #include <cassert>
 #include <cstring>
-#include "fftw_wrappers.hh"
+#include "fftw_wrappers.hpp"
 
 using namespace std;
 
